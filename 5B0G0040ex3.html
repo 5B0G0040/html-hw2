@@ -1,0 +1,104 @@
+<!DOCTYPE html> <!--5B0G0040 張紘緯-->
+<html lang="zh-TW"> <!-- 網頁語言設定為繁體中文 -->
+<head>
+<meta charset="UTF-8"> <!-- 設定文件編碼為 UTF-8 -->
+<meta name="viewport" content="width=device-width, initial-scale=1.0"> <!-- 設定視窗寬度和初始縮放比例 -->
+<title>求質數</title> <!-- 設定網頁標題 -->
+<style>
+  /* CSS 樣式 */
+  .input-container {
+    text-align: center; /* 文字置中 */
+    padding-bottom: 10px; /* 底部填充 */
+  }
+  #numberInput, #findPrimesButton {
+    margin: 0 auto;  /* 元素水平置中 */
+  }
+  .prime {
+    color: red; /* 紅色文字 */
+    font-weight: bold; /* 粗體字 */
+    border: 1px solid red; /* 紅色邊框 */
+    padding: 2px; /* 內邊距 */
+    display: inline-block; /* 行內區塊元素 */
+  }
+  .normal {
+    color: black; /* 黑色文字 */
+    display: inline-block; /* 行內區塊元素 */
+  }
+  .multiple {
+    display: inline-block; /* 行內區塊元素 */
+    margin-right: 5px; /* 右邊距 */
+  }
+</style>
+</head>
+<body>
+
+<h2>求質數</h2> <!-- 標題 -->
+<input type="text" id="numberInput" placeholder="輸入一個正整數"> <!-- 文本輸入框 -->
+<button onclick="findPrimes()">找質數</button> <!-- 按鈕 -->
+<div id="result"></div> <!-- 顯示結果的容器 -->
+
+<script>
+function isPrime(num) {
+    // 判斷數字是否為質數的函式
+    if (num <= 1) return false;
+    if (num === 2 || num === 3) return true;
+    if (num % 2 === 0 || num % 3 === 0) return false;
+    for (let i = 5; i * i <= num; i += 6) {
+        if (num % i === 0 || num % (i + 2) === 0) return false;
+    }
+    return true;
+}
+
+// 按 Enter 觸發找質數的功能
+document.getElementById("numberInput").addEventListener("keyup", function(event) {
+    if (event.key === "Enter" && this.value.trim() !== "") {
+        findPrimes();
+    }
+});
+
+// 找質數的函式
+function findPrimes() {
+    const input = document.getElementById("numberInput").value; // 取得輸入的值
+    const resultDiv = document.getElementById("result"); // 取得顯示結果的容器
+    resultDiv.innerHTML = ""; // 清容器
+
+    if (!/^\d+$/.test(input) || parseInt(input) <= 0) { // 驗證輸入是否為正整數
+        alert("輸入一個正整數。");
+        return;
+    }
+
+    const n = parseInt(input); // 將輸入值轉換為整數
+    let primes = []; // 存質數的陣列
+
+    for (let i = 2; i <= n; i++) { // 從 2 到 n 瀏覽每個數字
+        if (isPrime(i)) { // 如果是質數
+            primes.push(i); // 加入質數陣列
+        } else {
+            let normalElement = document.createElement("span"); // 創一個 span 元素
+            normalElement.classList.add("normal"); // 添加 normal 類
+            normalElement.textContent = i; // 設置文本內容
+            resultDiv.appendChild(normalElement); // 添加到結果容器
+            resultDiv.appendChild(document.createTextNode(" ")); // 添加空格
+        }
+    }
+
+    primes.forEach((prime, index) => { // 瀏覽質數陣列
+        const primeElement = document.createElement("div"); // 創建一個 div 元素
+        primeElement.textContent = prime; // 設置文本內容為質數
+        primeElement.classList.add("prime"); // 添加 prime 類
+        resultDiv.appendChild(primeElement); // 添加到結果容器
+
+        let hue = index * (360 / primes.length); // 計算顏色的色調
+        for (let j = 2; j * prime <= n; j++) { // 瀏覽質數的倍數
+            const multipleElement = document.createElement("span"); // 創建一個 span 元素
+            multipleElement.textContent = j * prime; // 設置文本內容為倍數
+            multipleElement.classList.add("multiple"); // 添加 multiple 類
+            multipleElement.style.color = `hsl(${hue}, 100%, 50%)`; // 設置文字顏色
+            resultDiv.appendChild(multipleElement); // 添加到結果容器
+        }
+        resultDiv.appendChild(document.createElement("br")); // 添加換行
+    });
+}
+</script>
+</body>
+</html>
